@@ -26,9 +26,8 @@ export default defineConfig([
       parser: tseslint.parser,
       parserOptions: {
         ecmaFeatures: { jsx: true },
-        project: ["./tsconfig.app.json", "./tsconfig.node.json"],
+        project: ['./tsconfig.eslint.json'],
         tsconfigRootDir: import.meta.dirname,
-        EXPERIMENTAL_useProjectService: true,
       },
     },
     plugins: {
@@ -41,7 +40,7 @@ export default defineConfig([
       "import/resolver": {
         typescript: {
           alwaysTryTypes: true,
-          project: ["./tsconfig.app.json", "./tsconfig.node.json"],
+          project: ['./tsconfig.eslint.json'],
         },
         node: true,
       },
@@ -75,6 +74,5 @@ export default defineConfig([
       "jsx-a11y/anchor-is-valid": "warn",
     },
   },
-  // Al final, Prettier apaga las reglas de formato que puedan chocar
   prettierConfig,
 ]);

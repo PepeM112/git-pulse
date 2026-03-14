@@ -1,7 +1,8 @@
-import { useLazyQuery, gql } from "@apollo/client";
-import { useState } from "react";
+import { gql } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client/react';
+import { useState } from 'react';
 
-import { TokenInput } from "../ui/TokenInput";
+import { TokenInput } from '../ui/TokenInput';
 
 type ValidateTokenData = {
   viewer: {
@@ -27,27 +28,26 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onSuccess }: OnboardingP
   const [error, setError] = useState<string | null>(null);
 
   const [validateToken, { loading }] = useLazyQuery<ValidateTokenData>(VALIDATE_TOKEN, {
-    fetchPolicy: "network-only",
-    onCompleted: (data: ValidateTokenData) => {
-      console.log("Token validation successful:", data.viewer.login);
-    },
-    onError: (err: Error) => {
-      setError(err.message.includes("401") ? "Invalid token or expired. Please check permissions." : err.message);
-      localStorage.removeItem("gh_token");
-    },
+    fetchPolicy: 'network-only',
   });
 
   const handleTokenSubmit = async (token: string) => {
     setError(null);
-    localStorage.setItem("gh_token", token);
+    localStorage.setItem('gh_token', token);
 
     try {
-      const { data } = await validateToken();
+      const { data, error } = await validateToken();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
       if (data?.viewer) {
         onSuccess(token);
       }
-    } catch {
-      // Error handling is done in onError callback of useLazyQuery
+    } catch (err: unknown) {
+      setError(err instanceof Error && err.message?.includes('401') ? 'Invalid token.' : 'Error connecting to GitHub');
+      localStorage.removeItem('gh_token');
     }
   };
 
