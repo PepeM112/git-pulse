@@ -1,10 +1,16 @@
 import { useState } from "react";
 
-export const TokenInput = ({ onTokenSubmit }: { onTokenSubmit: (token: string) => void }) => {
+type TokenInputProps = {
+  onTokenSubmit: (token: string) => void;
+  isLoading?: boolean;
+  error?: string | null;
+};
+
+export const TokenInput = ({ onTokenSubmit, isLoading, error }: TokenInputProps) => {
   const [token, setToken] = useState("");
   const [showToken, setShowToken] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (token.trim().length > 0) {
       onTokenSubmit(token.trim());
@@ -34,11 +40,15 @@ export const TokenInput = ({ onTokenSubmit }: { onTokenSubmit: (token: string) =
             {showToken ? "Hide" : "Show"}
           </button>
         </div>
+
+        {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+          disabled={isLoading || token.trim().length === 0}
+          className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]"
         >
-          Initialize Sync
+          {isLoading ? "Validating..." : "Connect GitHub"}
         </button>
       </form>
       <div className="mt-8 pt-6 border-t border-white/5 text-center">

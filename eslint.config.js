@@ -1,12 +1,12 @@
 import js from "@eslint/js";
-import globals from "globals";
-import reactHooks from "eslint-plugin-react-hooks";
-import reactRefresh from "eslint-plugin-react-refresh";
-import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
+import prettierConfig from "eslint-config-prettier";
 import importPlugin from "eslint-plugin-import";
 import jsxA11y from "eslint-plugin-jsx-a11y";
-import prettierConfig from "eslint-config-prettier";
-import { defineConfig } from "eslint/config";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
 export default defineConfig([
   { ignores: ["dist/", "node_modules/"] },
@@ -27,12 +27,13 @@ export default defineConfig([
       parserOptions: {
         ecmaFeatures: { jsx: true },
         project: ["./tsconfig.app.json", "./tsconfig.node.json"],
+        tsconfigRootDir: import.meta.dirname,
+        EXPERIMENTAL_useProjectService: true,
       },
     },
     plugins: {
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
-      "jsx-a11y": jsxA11y,
       import: importPlugin,
     },
     settings: {

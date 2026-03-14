@@ -1,24 +1,22 @@
-import { useState, useEffect } from "react";
-import { TokenInput } from "./components/TokenInput";
+import { useState } from "react";
+
+import { Dashboard } from '@/components/dashboard';
+import { Onboarding } from '@/components/onboarding';
 
 function App() {
   const [token, setToken] = useState<string | null>(localStorage.getItem("gh_token"));
 
-  const saveToken = (newToken: string) => {
-    localStorage.setItem("gh_token", newToken);
-    setToken(newToken);
+  const handleAuthSuccess = (validToken: string) => {
+    localStorage.setItem('gh_token', validToken);
+    setToken(validToken);
   };
 
-  if (!token) {
-    return (
-      <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div className="mb-12">
-          <h1 className="text-4xl font-black tracking-tighter text-blue-500">
-            GIT<span className="text-slate-200">PULSE</span>
-          </h1>
-        </div>
-        <TokenInput onTokenSubmit={saveToken} />
-      </main>
-    );
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('gh_token');
+    setToken(null);
+  };
+
+  return token ? <Dashboard onLogout={handleLogout} /> : <Onboarding onSuccess={handleAuthSuccess} />;
 }
+
+export default App;
