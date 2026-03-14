@@ -1,16 +1,24 @@
-function App() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
-      <div className="text-center">
-        <h1 className="text-5xl font-black tracking-tighter text-blue-500">
-          GIT<span className="text-slate-200">PULSE</span>
-        </h1>
-        <p className="mt-2 text-slate-400 font-medium tracking-widest uppercase text-xs">
-          System Online _
-        </p>
-      </div>
-    </div>
-  )
-}
+import { useState, useEffect } from "react";
+import { TokenInput } from "./components/TokenInput";
 
-export default App
+function App() {
+  const [token, setToken] = useState<string | null>(localStorage.getItem("gh_token"));
+
+  const saveToken = (newToken: string) => {
+    localStorage.setItem("gh_token", newToken);
+    setToken(newToken);
+  };
+
+  if (!token) {
+    return (
+      <main className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div className="mb-12">
+          <h1 className="text-4xl font-black tracking-tighter text-blue-500">
+            GIT<span className="text-slate-200">PULSE</span>
+          </h1>
+        </div>
+        <TokenInput onTokenSubmit={saveToken} />
+      </main>
+    );
+  }
+}
