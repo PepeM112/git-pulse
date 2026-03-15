@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Dashboard } from '@/components/dashboard';
+import { DashboardShell } from '@/components/dashboard';
 import { Onboarding } from '@/components/onboarding';
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
     setToken(null);
   };
 
-  return token ? <Dashboard onLogout={handleLogout} /> : <Onboarding onSuccess={handleAuthSuccess} />;
+  return token ? <DashboardShell onLogout={handleLogout} /> : <Onboarding onSuccess={handleAuthSuccess} />;
 }
 
 export default App;
