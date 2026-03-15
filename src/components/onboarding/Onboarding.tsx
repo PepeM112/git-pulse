@@ -12,8 +12,8 @@ type ValidateTokenData = {
 };
 
 const VALIDATE_TOKEN = gql`
-  query ValidateToken($token: String!) {
-    viewer(token: $token) {
+  query ValidateToken {
+    viewer {
       login
       avatarUrl
     }
@@ -46,7 +46,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onSuccess }: OnboardingP
         onSuccess(token);
       }
     } catch (err: unknown) {
-      setError(err instanceof Error && err.message?.includes('401') ? 'Invalid token.' : 'Error connecting to GitHub');
+      setError(err instanceof Error && err.message.includes('401') ? 'Invalid token.' : 'Error connecting to GitHub');
       localStorage.removeItem('gh_token');
     }
   };

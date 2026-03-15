@@ -35,7 +35,7 @@ export const TokenInput = ({ onTokenSubmit, isLoading, error }: TokenInputProps)
           <button
             type="button"
             onClick={() => setShowToken(!showToken)}
-            className="absolute right-3 top-3.5 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-slate-300 transition-colors"
+            className="absolute right-1 top-0 px-2 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-slate-300 transition-colors"
           >
             {showToken ? "Hide" : "Show"}
           </button>
@@ -46,7 +46,7 @@ export const TokenInput = ({ onTokenSubmit, isLoading, error }: TokenInputProps)
         <button
           type="submit"
           disabled={isLoading || token.trim().length === 0}
-          className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98]"
+          className="w-full bg-green-700 hover:bg-green-600 disabled:bg-slate-800 text-white font-semibold py-3 rounded-lg transition-all active:scale-[0.98]"
         >
           {isLoading ? "Validating..." : "Connect GitHub"}
         </button>
