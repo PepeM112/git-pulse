@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 import { UserProfile } from './UserProfile';
+import { RepoGridSkeleton, RepoSkeleton } from './RepoSkeleton';
 
 type View = 'dashboard' | 'feed';
 
@@ -61,18 +62,16 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: Dash
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
-          <div className="max-w-6xl">
-            {activeView === 'dashboard' ? (
-              <div className="grid gap-6">
-                <h2 className="text-2xl font-bold">Your Repositories</h2>
-                <p className="text-slate-500">Fetching insights...</p>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-64 text-slate-500 italic">
-                Pulse Feed coming soon...
-              </div>
-            )}
-          </div>
+          {activeView === 'dashboard' ? (
+            <div className="grid gap-6">
+              <h2 className="text-2xl font-bold">Your Repositories</h2>
+              <RepoGridSkeleton />
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64 text-slate-500 italic">
+              Pulse Feed coming soon...
+            </div>
+          )}
         </main>
       </div>
       {/* MOBILE NAV */}

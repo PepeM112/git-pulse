@@ -6,7 +6,7 @@ type TokenInputProps = {
   error?: string | null;
 };
 
-export const TokenInput = ({ onTokenSubmit, isLoading, error }: TokenInputProps) => {
+export const TokenInput:React.FC<TokenInputProps> = ({ onTokenSubmit, isLoading, error }: TokenInputProps) => {
   const [token, setToken] = useState("");
   const [showToken, setShowToken] = useState(false);
 
