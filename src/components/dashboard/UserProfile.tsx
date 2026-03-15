@@ -40,7 +40,7 @@ export const UserProfile = () => {
 
     return (
         <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
+            <div className="text-right">
                 <p className="text-sm font-medium text-slate-200">{viewer?.login}</p>
                 <p className="text-[10px] font mono text-slate-500 uppercase tracking-wider">
                     Quota: {rateLimit?.remaining} / {rateLimit?.limit}

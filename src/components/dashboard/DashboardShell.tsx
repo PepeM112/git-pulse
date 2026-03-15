@@ -56,13 +56,12 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: Dash
       </aside>
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b border-slate-900 flex items-center justify-between px-8 bg-slate-950/50 backdrop-blur-sm">
-          <h1 className="text-sm font-bold uppercase tracking-widest text-slate-500">{activeView}</h1>
+        <header className="h-16 border-b border-slate-900 flex items-center justify-end px-4 bg-slate-950/50 backdrop-blur-sm">
           <UserProfile />
         </header>
 
-        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-          <div className="max-w-6xl mx-auto">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
+          <div className="max-w-6xl">
             {activeView === 'dashboard' ? (
               <div className="grid gap-6">
                 <h2 className="text-2xl font-bold">Your Repositories</h2>
