@@ -1,1 +1,2 @@
-export * from './Dashboard';
+export * from './DashboardShell';
+export * from './UserProfile';
