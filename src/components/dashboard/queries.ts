@@ -40,6 +40,7 @@ export const GET_TOP_REPOS = gql`
   ${REPO_FIELDS}
   query GetTopRepos($first: Int!) {
     viewer {
+      id
       repositories(
         first: $first, 
         orderBy: { field: STARGAZERS, direction: DESC },

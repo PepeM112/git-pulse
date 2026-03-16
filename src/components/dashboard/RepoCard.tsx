@@ -1,4 +1,5 @@
-import { Star, ExternalLink, Calendar } from 'lucide-react';
+import { Icon } from '@iconify/react';
+import { Star, Calendar } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
 
@@ -23,7 +24,7 @@ export const RepoCard: React.FC<RepoCardProps> = ({ repo }: RepoCardProps) => {
           rel="noopener noreferrer"
           className="text-[10px] text-slate-500 flex items-center gap-1 hover:text-slate-300 mt-1"
         >
-          view on GitHub <ExternalLink size={10} />
+          <Icon icon="mdi:github" className="w-8 h-8" />
         </a>
       </div>
 
