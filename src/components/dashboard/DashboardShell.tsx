@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import { RepoGridSkeleton } from './RepoSkeleton';
+import { RepoList } from './RepoList';
 import { UserProfile } from './UserProfile';
 
 type View = 'dashboard' | 'feed';
@@ -65,7 +65,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: Dash
           {activeView === 'dashboard' ? (
             <div className="grid gap-6">
               <h2 className="text-2xl font-bold">Your Repositories</h2>
-              <RepoGridSkeleton />
+              <p className="text-sm text-slate-500">A real-time pulse of your GitHub projects.</p>
+              <RepoList />
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-64 text-slate-500 italic">
