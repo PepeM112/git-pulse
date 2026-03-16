@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
+import { RepoList } from './RepoList';
 import { UserProfile } from './UserProfile';
-import { RepoGridSkeleton, RepoSkeleton } from './RepoSkeleton';
 
 type View = 'dashboard' | 'feed';
 
@@ -62,12 +62,14 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: Dash
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
-          {activeView === 'dashboard' ? (
+          <section style={{ display: activeView === 'dashboard' ? 'block' : 'none' }}>
             <div className="grid gap-6">
               <h2 className="text-2xl font-bold">Your Repositories</h2>
-              <RepoGridSkeleton />
+              <p className="text-sm text-slate-500">A real-time pulse of your GitHub projects.</p>
+              <RepoList />
             </div>
-          ) : (
+          </section>
+          {activeView === 'feed' && (
             <div className="flex flex-col items-center justify-center h-64 text-slate-500 italic">
               Pulse Feed coming soon...
             </div>

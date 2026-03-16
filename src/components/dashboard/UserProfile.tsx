@@ -1,4 +1,4 @@
-import { gql  } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { useQuery  } from '@apollo/client/react';
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
