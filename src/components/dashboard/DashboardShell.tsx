@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
+import { RepoGridSkeleton } from './RepoSkeleton';
 import { UserProfile } from './UserProfile';
-import { RepoGridSkeleton, RepoSkeleton } from './RepoSkeleton';
 
 type View = 'dashboard' | 'feed';
 
