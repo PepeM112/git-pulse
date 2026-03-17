@@ -1,9 +1,13 @@
 import { ApolloClient, InMemoryCache, HttpLink, ApolloLink, concat } from '@apollo/client';
+import { RetryLink } from "@apollo/client/link/retry";
 
-// 1. HTTP connection to the API
 const httpLink = new HttpLink({ uri: 'https://api.github.com/graphql' });
 
-// 2. Middleware for the Token
+const retryLink = new RetryLink({
+  delay: { initial: 300, max: Infinity, jitter: true },
+  attempts: { max: 3 }
+});
+
 const authMiddleware = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem('gh_token');
   
@@ -17,8 +21,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation);
 });
 
-// 3. Final client
 export const client = new ApolloClient({
-  link: concat(authMiddleware, httpLink),
+  link: concat(authMiddleware, concat(retryLink, httpLink)),
   cache: new InMemoryCache(),
 });
