@@ -132,7 +132,7 @@ const NavButton: React.FC<NavButtonProps> = ({ active, onClick, icon, label }) =
       onClick={onClick}
       className={`w-full justify-start gap-3 h-11 px-4 transition-all ${
         active
-          ? 'bg-blue-600/10 text-blue-400 hover:bg-blue-600/20 border-r-2 border-blue-500 rounded-r-none'
+          ? 'bg-blue-600/10 text-blue-400 hover:bg-blue-600/20 border-r-2 border-blue-500'
           : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
       }`}
     >
@@ -158,7 +158,7 @@ const LogoutButton = ({ isMobile = false, onLogout }: LogoutButtonProps) => (
         ) : (
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
+            className="w-full h-10 justify-start gap-3 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
           >
             <LogOut size={18} />
             Logout
