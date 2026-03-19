@@ -1,6 +1,7 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, Rss, LogOut, Zap } from 'lucide-react';
 import { useState } from 'react';
-import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
+import { ErrorBoundary, type FallbackProps } from 'react-error-boundary';
 
 import {
   AlertDialog,
@@ -14,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { usePulseSocket } from '@/hooks/usePulseSocket';
 
 import { RepoList } from './RepoList';
 import { UserProfile } from './UserProfile';
@@ -37,6 +39,8 @@ function ListErrorFallback({ resetErrorBoundary }: FallbackProps) {
 
 export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: DashboardShellProps) => {
   const [activeView, setActiveView] = useState<View>('dashboard');
+
+  const { pulses, isConnected } = usePulseSocket();
 
   return (
     <div className="flex h-screen bg-slate-950 text-slate-200">
@@ -72,8 +76,8 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: Dash
         <header className="h-16 border-b border-slate-900 flex items-center justify-end px-4 bg-slate-950/50 backdrop-blur-sm">
           <UserProfile />
         </header>
-
         <main className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
+          {/* DASHBOARD */}
           <section style={{ display: activeView === 'dashboard' ? 'block' : 'none' }}>
             <div className="grid gap-6">
               <h2 className="text-2xl font-bold">Your Repositories</h2>
@@ -83,9 +87,74 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: Dash
               </ErrorBoundary>
             </div>
           </section>
+          {/* PULSE FEED */}
           {activeView === 'feed' && (
-            <div className="flex flex-col items-center justify-center h-64 text-slate-500 italic">
-              Pulse Feed coming soon...
+            <div className="max-w-4xl mx-auto flex flex-col gap-4">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-black tracking-tight">LIVE PULSE FEED</h2>
+                <div className="text-xs font-mono text-slate-500 uppercase">Showing last {pulses.length} events</div>
+              </div>
+
+              {pulses.length === 0 ? (
+                <div className="h-64 flex flex-col items-center justify-center border-2 border-dashed border-slate-900 rounded-2xl text-slate-600 italic">
+                  <Zap size={32} className="mb-2 opacity-20" />
+                  Waiting for GitHub activity...
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <AnimatePresence initial={false}>
+                    {pulses.map(pulse => (
+                      <motion.div
+                        key={pulse.id}
+                        layout
+                        initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 500,
+                          damping: 30,
+                          opacity: { duration: 0.2 },
+                        }}
+                        className="bg-slate-900/40 border border-slate-800 p-4 rounded-xl flex items-start gap-4 hover:bg-slate-900/60 transition-colors group"
+                      >
+                        {/* Avatar with Status Ring */}
+                        <div className="relative shrink-0">
+                          <img src={pulse.avatar} alt="" className="w-10 h-10 rounded-full border border-slate-700" />
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-600 rounded-full border-2 border-slate-950 flex items-center justify-center">
+                            <Zap size={8} className="text-white fill-current" />
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-bold text-blue-400 truncate">
+                              {pulse.user} <span className="text-slate-500 font-normal">pushed to</span> {pulse.repo}
+                            </h4>
+                            <span className="text-[10px] font-mono text-slate-600">
+                              {new Date(pulse.timestamp).toLocaleTimeString()}
+                            </span>
+                          </div>
+                          <p className="text-slate-200 text-sm mt-1 leading-relaxed">{pulse.message}</p>
+                        </div>
+
+                        {/* Action Icon (Visible on hover) */}
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                          <a
+                            href={pulse.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-slate-500 hover:text-white"
+                          >
+                            <Rss size={16} />
+                          </a>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )}
             </div>
           )}
         </main>
@@ -148,39 +217,39 @@ type LogoutButtonProps = {
 };
 
 const LogoutButton = ({ isMobile = false, onLogout }: LogoutButtonProps) => (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        {isMobile ? (
-          <button className="flex flex-1 flex-col items-center justify-center h-full text-slate-500 hover:text-red-400">
-            <LogOut size={24} />
-            <span className="text-[10px] mt-1 font-medium">Logout</span>
-          </button>
-        ) : (
-          <Button
-            variant="ghost"
-            className="w-full h-10 justify-start gap-3 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
-          >
-            <LogOut size={18} />
-            Logout
-          </Button>
-        )}
-      </AlertDialogTrigger>
+  <AlertDialog>
+    <AlertDialogTrigger asChild>
+      {isMobile ? (
+        <button className="flex flex-1 flex-col items-center justify-center h-full text-slate-500 hover:text-red-400">
+          <LogOut size={24} />
+          <span className="text-[10px] mt-1 font-medium">Logout</span>
+        </button>
+      ) : (
+        <Button
+          variant="ghost"
+          className="w-full h-10 justify-start gap-3 text-slate-400 hover:text-red-400 hover:bg-red-400/10"
+        >
+          <LogOut size={18} />
+          Logout
+        </Button>
+      )}
+    </AlertDialogTrigger>
 
-      <AlertDialogContent className="bg-slate-900 border-slate-800 text-slate-200">
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-          <AlertDialogDescription className="text-slate-400">
-            This will end your current session and you will need to provide your GitHub token again to log in.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel className="bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200">
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction onClick={onLogout} className="bg-red-600 hover:bg-red-700 text-white border-none">
-            Log out
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+    <AlertDialogContent className="bg-slate-900 border-slate-800 text-slate-200">
+      <AlertDialogHeader>
+        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+        <AlertDialogDescription className="text-slate-400">
+          This will end your current session and you will need to provide your GitHub token again to log in.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel className="bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-200">
+          Cancel
+        </AlertDialogCancel>
+        <AlertDialogAction onClick={onLogout} className="bg-red-600 hover:bg-red-700 text-white border-none">
+          Log out
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+);
