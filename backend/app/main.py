@@ -1,7 +1,8 @@
 import logging
 import sys
-from typing import Union
+from typing import Any, Dict, Union
 
+import socketio
 from fastapi import Depends, FastAPI, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn.logging import DefaultFormatter
@@ -20,16 +21,32 @@ logger.handlers = [console_handler]
 logger.setLevel(logging.INFO)
 logger.propagate = False
 
+# --- SOCKET.IO CONFIGURATION ---
+sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=["http://localhost:5173"])
+sio_app = socketio.ASGIApp(sio)
+
 app = FastAPI(title="Git-Pulse API", version="1.0.0")
 
 # --- MIDDLEWARE ---
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/socket.io", sio_app)
+
+
+@sio.on("connect") # type: ignore - We know its initialized as an AsyncServer
+async def handle_connect(sid: str, _: Dict[str, Any]) -> None:
+    logger.info(f"Client connected: {sid}")
+
+
+@sio.on("disconnect") # type: ignore - We know its initialized as an AsyncServer
+async def handle_disconnect(sid: str) -> None:
+    logger.info(f"Client disconnected: {sid}")
 
 
 @app.post(
@@ -63,6 +80,8 @@ async def github_webhook(
         timestamp=latest_timestamp,
         url=latest_url,
     )
+
+    await sio.emit("new_pulse", pulse_data.model_dump())
 
     logger.info(f"Pulse Event created: {pulse_data.user} pushed to {pulse_data.repo}")
 
