@@ -2,13 +2,10 @@ pyproject.toml
 backend/app/__init__.py
 backend/app/config.py
 backend/app/main.py
+backend/app/schemas.py
+backend/app/security.py
 backend/git_pulse_backend.egg-info/PKG-INFO
 backend/git_pulse_backend.egg-info/SOURCES.txt
 backend/git_pulse_backend.egg-info/dependency_links.txt
 backend/git_pulse_backend.egg-info/requires.txt
 backend/git_pulse_backend.egg-info/top_level.txt
-git_pulse_backend.egg-info/PKG-INFO
-git_pulse_backend.egg-info/SOURCES.txt
-git_pulse_backend.egg-info/dependency_links.txt
-git_pulse_backend.egg-info/requires.txt
-git_pulse_backend.egg-info/top_level.txt

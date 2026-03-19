@@ -1,5 +1,4 @@
-PYTHON_VENV := backend/.venv
-PYTHON := $(PYTHON_VENV)/bin/python
+PYTHON_VENV := .venv
 UVICORN := $(PYTHON_VENV)/bin/uvicorn
 
 default: help
@@ -21,14 +20,12 @@ install-frontend: ## Install React dependencies
 	@echo "--- Setting up Frontend ---"
 	cd frontend && npm install
 
-dev-backend: ## Run FastAPI server with hot-reload
-	cd backend && $(UVICORN) app.main:app --reload --port 8000
+up-backend: ## Start FastAPI server with hot-reload
+	@echo "Running FastAPI server in http://localhost:8000 ..."
+	@$(UVICORN) app.main:app --reload --port 8000 --app-dir backend
 
-dev-frontend: ## Run Vite server
+up-frontend: ## Run Vite server
 	cd frontend && npm run dev
-
-dev: ## Run both Frontend and Backend in parallel
-	@npx npm-run-all --parallel dev-frontend dev-backend
 
 help: ## Show this help menu
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
