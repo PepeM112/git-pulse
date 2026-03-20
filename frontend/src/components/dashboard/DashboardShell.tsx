@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { usePulseSocket } from '@/hooks/usePulseSocket';
+import { socket } from '@/services/socket';
 
 import { RepoList } from './RepoList';
 import { UserProfile } from './UserProfile';
@@ -66,7 +67,7 @@ export const DashboardShell: React.FC<DashboardShellProps> = ({ onLogout }: Dash
             label="Pulse Feed"
           />
         </nav>
-
+        <StatusIndicator isConnected={isConnected} />
         <div className="p-4 mt-auto border-t border-slate-900">
           <LogoutButton onLogout={onLogout} />
         </div>
@@ -252,4 +253,33 @@ const LogoutButton = ({ isMobile = false, onLogout }: LogoutButtonProps) => (
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>
+);
+
+const StatusIndicator = ({ isConnected }: { isConnected: boolean }) => (
+  <div className="px-6 py-4 border-t border-slate-900 bg-slate-950/50">
+    <div className="flex items-center justify-between mb-2">
+      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">System Status</span>
+      {/* LED Indicator */}
+      <div
+        className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${
+          isConnected
+            ? 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.4)] animate-pulse'
+            : 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.4)]'
+        }`}
+      />
+    </div>
+    <div className="flex items-center justify-between">
+      <span className="text-xs font-medium text-slate-300">
+        {isConnected ? 'Real-time Link Active' : 'Connection Lost'}
+      </span>
+      {!isConnected && (
+        <button
+          onClick={() => socket.connect()}
+          className="text-xs text-blue-500 hover:text-blue-400 font-bold underline decoration-blue-500/30"
+        >
+          RECONNECT
+        </button>
+      )}
+    </div>
+  </div>
 );

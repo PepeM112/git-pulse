@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { DashboardShell } from '@/components/dashboard';
 import { Onboarding } from '@/components/onboarding';
@@ -16,12 +16,11 @@ function App() {
     setToken(null);
   }, []);
 
-  return useMemo(() => {
-    if (token) {
-      return <DashboardShell onLogout={handleLogout} />;
-    }
-    return <Onboarding onSuccess={handleAuthSuccess} />;
-  }, [token, handleAuthSuccess, handleLogout]);
+  return (
+    <>
+    { token ? <DashboardShell onLogout={handleLogout} /> : <Onboarding onSuccess={handleAuthSuccess} /> }
+    </>
+  )
 }
 
 export default App;
