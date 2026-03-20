@@ -3,10 +3,9 @@ import { Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { Input } from '@/components/ui/input';
-
-import { GET_TOP_REPOS, type GetTopReposData } from './queries';
-import { RepoCard } from './RepoCard';
-import { RepoGridSkeleton } from './RepoSkeleton';
+import { GET_TOP_REPOS, type GetTopReposData } from '@/features/repos/api/queries';
+import { RepoCard } from '@/features/repos/components/RepoCard';
+import { RepoGridSkeleton } from '@/features/repos/components/RepoSkeleton';
 
 export const RepoList: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');

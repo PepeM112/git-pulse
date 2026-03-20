@@ -2,8 +2,7 @@ import { Icon } from '@iconify/react';
 import { Star, Calendar } from 'lucide-react';
 
 import { Card } from '@/components/ui/card';
-
-import { type Repo } from './queries';
+import { type Repo } from '@/features/repos/api/queries';
 
 type RepoCardProps = {
   repo: Repo;

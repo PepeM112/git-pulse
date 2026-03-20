@@ -1,26 +1,9 @@
-import { useCallback, useState } from "react";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { DashboardShell } from '@/components/dashboard';
-import { Onboarding } from '@/components/onboarding';
+import { routes } from './router/routes';
 
-function App() {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("gh_token"));
+const router = createBrowserRouter(routes);
 
-  const handleAuthSuccess = useCallback((validToken: string) => {
-    localStorage.setItem('gh_token', validToken);
-    setToken(validToken);
-  }, []);
-
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem('gh_token');
-    setToken(null);
-  }, []);
-
-  return (
-    <>
-    { token ? <DashboardShell onLogout={handleLogout} /> : <Onboarding onSuccess={handleAuthSuccess} /> }
-    </>
-  )
+export default function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App;
