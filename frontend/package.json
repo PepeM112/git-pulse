@@ -5,10 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "build": "vite build",
     "preview": "vite preview",
-    "gen-client": "openapi-ts"
+    "clean": "rimraf ./node_modules/.vite",
+    "test": "vitest",
+    "test:unit": "vitest --environment jsdom --root src/",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit -p tsconfig.app.json",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:style": "stylelint \"src/**/*.{css}\" --allow-empty-input",
+    "format": "eslint . --ext .ts,.tsx --fix && stylelint \"src/**/*.{css}\" --fix --allow-empty-input && prettier \"**/*.{css,ts,tsx,js,json,yaml,yml}\" --write --ignore-path .prettierignore",
+    "format:check": "eslint . --ext .ts,.tsx && stylelint \"src/**/*.{css}\" --allow-empty-input && prettier \"**/*.{css,ts,tsx,js,json,yaml,yml}\" --check --ignore-path .prettierignore",
+    "format:branch": "f() { FILES=$(git diff --name-only --diff-filter=ACMR $(git merge-base HEAD main)); TSX_FILES=$(echo \"$FILES\" | grep -E '\\.(ts|tsx)$'); CSS_FILES=$(echo \"$FILES\" | grep -E '\\.css$'); if [ -n \"$TSX_FILES\" ]; then eslint $TSX_FILES --fix; fi; if [ -n \"$CSS_FILES\" ]; then stylelint $CSS_FILES --fix --allow-empty-input; fi; if [ -n \"$FILES\" ]; then prettier $FILES --write; fi; }; f",
+    "format:branch:check": "f() { FILES=$(git diff --name-only --diff-filter=ACMR $(git merge-base HEAD main)); TSX_FILES=$(echo \"$FILES\" | grep -E '\\.(ts|tsx)$'); CSS_FILES=$(echo \"$FILES\" | grep -E '\\.css$'); if [ -n \"$TSX_FILES\" ]; then eslint $TSX_FILES; fi && if [ -n \"$CSS_FILES\" ]; then stylelint $CSS_FILES --allow-empty-input; fi && if [ -n \"$FILES\" ]; then prettier $FILES --check; fi; }; f"
   },
   "dependencies": {
     "@apollo/client": "^4.1.6",
@@ -37,6 +46,8 @@
     "@hey-api/openapi-ts": "^0.94.4",
     "@tailwindcss/postcss": "^4.2.1",
     "@tailwindcss/vite": "4.2.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -51,10 +62,15 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "jsdom": "^29.0.1",
     "postcss": "^8.5.8",
+    "stylelint": "^17.5.0",
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-order": "^8.1.1",
     "tailwindcss": "^4.2.1",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.56.1",
-    "vite": "7.3.1"
+    "vite": "7.3.1",
+    "vitest": "^4.1.0"
   }
 }

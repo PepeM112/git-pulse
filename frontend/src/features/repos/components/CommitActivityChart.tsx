@@ -1,14 +1,10 @@
-import { subDays, format, isSameDay, startOfDay } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 import { type TooltipPayloadEntry } from 'recharts';
 
 import type { PulseEventIdentified } from '@/features/pulses/hooks/usePulseSocket';
 
-enum ChartRange {
-  LAST_7_DAYS = 7,
-  LAST_30_DAYS = 30,
-}
+import { ChartRange, formatChartData } from '../utils/chart-utils';
 
 type CommitActivityChartProps = {
   pulses: PulseEventIdentified[];
@@ -17,34 +13,7 @@ type CommitActivityChartProps = {
 export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({ pulses }) => {
   const [range, setRange] = useState<ChartRange>(ChartRange.LAST_7_DAYS);
 
-  const chartData = useMemo(() => {
-    const now = startOfDay(new Date());
-
-    const days = Array.from({ length: range }, (_, i) => {
-      const date = subDays(now, i);
-      return {
-        date,
-        label: range === ChartRange.LAST_7_DAYS ? format(date, 'EEE') : format(date, 'dd MMM'),
-        count: 0,
-      };
-    }).reverse();
-
-    // TODO: Remove dummy data if no pulses
-    if (pulses.length === 0) {
-      return days.map((d, i) => ({
-        ...d,
-        count: Math.floor(Math.sin(i) * 5 + 6),
-      }));
-    }
-
-    pulses.forEach(pulse => {
-      const pulseDate = startOfDay(new Date(pulse.timestamp));
-      const dayMatch = days.find(d => isSameDay(d.date, pulseDate));
-      if (dayMatch) dayMatch.count++;
-    });
-
-    return days;
-  }, [pulses, range]);
+  const chartData = useMemo(() => formatChartData(pulses, range), [pulses, range]);
 
   return (
     <div className="w-full h-80 bg-slate-900/50 p-6 rounded-2xl border border-slate-800 shadow-inner flex flex-col transition-all">
@@ -94,7 +63,7 @@ export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({ pulses
               type="monotone"
               dataKey="count"
               stroke="#3b82f6"
-              strokeWidth={4}
+              strokeWidth={3}
               dot={range === ChartRange.LAST_7_DAYS}
               activeDot={{ r: 6, strokeWidth: 0, fill: '#60a5fa' }}
               animationDuration={1000}
