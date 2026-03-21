@@ -30,10 +30,10 @@ export default defineConfig({
       output: {
         manualChunks: id => {
           if (id.includes('node_modules')) {
-            if (id.includes('recharts')) return 'vendor-charts';
-            if (id.includes('@apollo')) return 'vendor-graphql';
-            if (id.includes('react')) return 'vendor-framework';
-            return 'vendor-others';
+            if (id.includes('recharts')) {
+              return 'vendor-charts';
+            }
+            return 'vendor';
           }
         },
       },
