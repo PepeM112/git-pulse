@@ -20,3 +20,4 @@ MANIFEST
 
 **/bundle-report.html
 
+backend/test_webhook.py

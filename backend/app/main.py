@@ -25,7 +25,7 @@ logger.propagate = False
 sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins=["http://localhost:5173"])
 sio_app = socketio.ASGIApp(sio)
 
-app = FastAPI(title="Git-Pulse API", version="1.0.0")
+app = FastAPI(title="Git-Pulse API", version="1.0.0", openapi_url="/openapi.json", docs_url="/docs")
 
 # --- MIDDLEWARE ---
 app.add_middleware(
