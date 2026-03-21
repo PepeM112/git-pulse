@@ -1,4 +1,6 @@
 # Python
+build/
+dist/
 __pycache__/
 *.py[cod]
 .venv/
@@ -15,4 +17,6 @@ MANIFEST
 **/node_modules/
 **/dist/
 **/src/client/
+
+**/bundle-report.html
 
