@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     cors_origins: List[str] = ["http://localhost:5173"]
 
-    model_config = SettingsConfigDict(env_file=".env")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 settings = Settings()  # type: ignore - Pydantic's BaseSettings does not have a default constructor, but we know it will work with the provided env file.
