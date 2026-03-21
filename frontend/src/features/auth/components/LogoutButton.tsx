@@ -19,7 +19,7 @@ type LogoutButtonProps = {
 
 export const LogoutButton: React.FC<LogoutButtonProps> = ({ isMobile = false }: LogoutButtonProps) => {
   const onLogout = () => {
-    localStorage.removeItem('github_token');
+    localStorage.removeItem('gh_token');
     window.location.reload();
   };
 

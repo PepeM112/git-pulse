@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import { useLazyQuery } from '@apollo/client/react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { TokenInput } from '../features/auth/components/TokenInput';
 
@@ -22,6 +23,7 @@ const VALIDATE_TOKEN = gql`
 
 export const LoginPage = () => {
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const [validateToken, { loading }] = useLazyQuery<ValidateTokenData>(VALIDATE_TOKEN, {
     fetchPolicy: 'network-only',
@@ -29,6 +31,7 @@ export const LoginPage = () => {
 
   const handleTokenSubmit = async (token: string) => {
     setError(null);
+    console.log('Received token:', token);
     localStorage.setItem('gh_token', token);
 
     try {
@@ -40,6 +43,7 @@ export const LoginPage = () => {
 
       if (data?.viewer) {
         localStorage.setItem('gh_token', token);
+        navigate('/', { replace: true });
       }
     } catch (err: unknown) {
       setError(err instanceof Error && err.message.includes('401') ? 'Invalid token.' : 'Error connecting to GitHub');
