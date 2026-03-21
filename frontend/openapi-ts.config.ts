@@ -1,7 +1,6 @@
 import { defineConfig } from '@hey-api/openapi-ts';
 
-const OPENAPI_URL =
-  (typeof process !== 'undefined' && process.env.OPENAPI_SCHEMA_URL) || 'http://localhost:8000/openapi.json';
+const OPENAPI_URL = process.env.OPENAPI_SCHEMA_URL || 'http://localhost:8000/openapi.json';
 
 export default defineConfig({
   input: OPENAPI_URL,
