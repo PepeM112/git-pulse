@@ -11,7 +11,7 @@ export type Repo = {
     name: string;
     color: string | null;
   } | null;
-}
+};
 
 export type GetTopReposData = {
   viewer: {
@@ -19,7 +19,7 @@ export type GetTopReposData = {
       nodes: Repo[];
     };
   };
-}
+};
 
 export const REPO_FIELDS = gql`
   fragment RepoFields on Repository {
@@ -41,11 +41,7 @@ export const GET_TOP_REPOS = gql`
   query GetTopRepos($first: Int!) {
     viewer {
       id
-      repositories(
-        first: $first, 
-        orderBy: { field: STARGAZERS, direction: DESC },
-        ownerAffiliations: [OWNER]
-      ) {
+      repositories(first: $first, orderBy: { field: STARGAZERS, direction: DESC }, ownerAffiliations: [OWNER]) {
         nodes {
           ...RepoFields
         }

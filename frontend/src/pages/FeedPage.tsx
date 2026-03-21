@@ -3,7 +3,6 @@ import { useOutletContext } from 'react-router-dom';
 import { PulseList } from '@/features/pulses/components/PulseList';
 import { type PulseEventIdentified } from '@/features/pulses/hooks/usePulseSocket';
 
-
 export const FeedPage: React.FC = () => {
   const { pulses } = useOutletContext<{ pulses: PulseEventIdentified[] }>();
 

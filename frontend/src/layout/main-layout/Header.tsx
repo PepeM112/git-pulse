@@ -6,4 +6,4 @@ export const Header: React.FC = () => {
       <UserProfile />
     </header>
   );
-}
+};
