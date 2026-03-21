@@ -19,14 +19,6 @@ export const formatChartData = (pulses: PulseEventIdentified[], range: number) =
     };
   }).reverse();
 
-  // TODO: Remove dummy data if no pulses
-  if (pulses.length === 0) {
-    return days.map((d, i) => ({
-      ...d,
-      count: Math.floor(Math.sin(i) * 5 + 6),
-    }));
-  }
-
   pulses.forEach(pulse => {
     const pulseDate = startOfDay(new Date(pulse.timestamp));
     const dayMatch = days.find(d => isSameDay(d.date, pulseDate));
