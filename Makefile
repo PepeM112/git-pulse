@@ -32,5 +32,11 @@ gen-ts: ## Generate TypeScript client from OpenAPI/Pydantic models
 	@cd frontend && npm run gen-client
 	@echo "Done"
 
+dev: ## Start both Backend and Frontend in parallel (interleaved logs)
+	@echo "Starting full development environment (Press Ctrl+C to stop)..."
+	@trap 'kill 0' SIGINT; \
+	$(UVICORN) app.main:app --reload --port 8000 --app-dir backend & \
+	cd frontend && npm run dev
+
 help: ## Show this help menu
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
