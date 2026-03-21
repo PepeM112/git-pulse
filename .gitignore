@@ -16,3 +16,5 @@ MANIFEST
 **/dist/
 **/src/client/
 
+**/bundle-report.html
+
