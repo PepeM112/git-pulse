@@ -20,9 +20,9 @@ export const usePulseSocket = () => {
 
     socket.on('new_pulse', (data: PulseEvent) => {
       setPulses(prev => {
-        const pulseWithId: PulseEventIdentified = { 
-          ...data, 
-          id: `${data.timestamp}-${Math.random()}` 
+        const pulseWithId: PulseEventIdentified = {
+          ...data,
+          id: `${data.timestamp}-${Math.random()}`,
         };
 
         toast.success(`New Pulse from ${data.user}`, {
@@ -32,9 +32,9 @@ export const usePulseSocket = () => {
             label: 'View',
             onClick: () => {
               const feedUrl = `/feed`;
-              window.open(feedUrl, '_blank') 
-            }
-          }
+              window.open(feedUrl, '_blank');
+            },
+          },
         });
         const updated = [pulseWithId, ...prev];
         return updated.slice(0, MAX_PULSES);
