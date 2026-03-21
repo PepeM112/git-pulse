@@ -25,7 +25,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/tests/setup.ts',
   },
-  build: {
+  /* build: {
     rollupOptions: {
       output: {
         manualChunks: id => {
@@ -38,5 +38,5 @@ export default defineConfig({
         },
       },
     },
-  },
+  }, */
 });
