@@ -14,14 +14,14 @@ type SidebarProps = {
 export const Sidebar: React.FC<SidebarProps> = ({ isConnected }) => {
   return (
     <aside className="hidden lg:flex w-64 flex-col border-r border-slate-900 bg-slate-950">
-        <SidebarHeader />
-        <Navigation />
-        <StatusIndicator isConnected={isConnected} />
-        <div className="p-4 mt-auto border-t border-slate-900">
-          <LogoutButton />
-        </div>
-      </aside>
-  )
+      <SidebarHeader />
+      <Navigation />
+      <StatusIndicator isConnected={isConnected} />
+      <div className="p-4 mt-auto border-t border-slate-900">
+        <LogoutButton />
+      </div>
+    </aside>
+  );
 };
 
 const SidebarHeader: React.FC = () => (
