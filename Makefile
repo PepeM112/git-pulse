@@ -8,15 +8,15 @@ default: help
 .PHONY: help setup dev-backend dev-frontend dev install-backend install-frontend
 
 setup: ## Initial setup for both frontend and backend
-	@make install-backend
-	@make install-frontend
+	@$(MAKE) install-backend
+	@$(MAKE) install-frontend
 	@echo "Setup complete. Run 'make dev' to start."
 
 install-backend: ## Set up Python virtual environment and dependencies
 	@echo "--- Setting up Backend ---"
-	cd $(BACKEND_DIR) && python3 -m venv .venv
+	python3 -m venv $(PYTHON_VENV)
 	$(PYTHON_VENV)/bin/pip install --upgrade pip
-	$(PYTHON_VENV)/bin/pip install -e "$(BACKEND_DIR)[dev]"
+	$(PYTHON_VENV)/bin/pip install -e ./$(BACKEND_DIR)"[dev]"
 
 install-frontend: ## Install Frontend dependencies
 	@echo "Installing frontend dependencies..."
