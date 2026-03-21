@@ -1,6 +1,6 @@
 import { type RouteObject } from 'react-router-dom';
 
-import { MainLayout } from '@/layout/MainLayout';
+import { MainLayout } from '@/layout/main-layout/MainLayout';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { FeedPage } from '@/pages/FeedPage';
 import { LoginPage } from '@/pages/LoginPage';

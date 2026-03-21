@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { useLazyQuery } from '@apollo/client/react';
 import { useState } from "react";
 
-import { TokenInput } from '../components/ui/TokenInput';
+import { TokenInput } from '../features/auth/components/TokenInput';
 
 type ValidateTokenData = {
   viewer: {

@@ -1,16 +1,17 @@
 import { Zap } from 'lucide-react';
 
 import { LogoutButton } from '@/features/auth/components/LogoutButton';
-import { usePulseSocket } from '@/features/pulses/hooks/usePulseSocket';
-import { socket } from '@/services/socket';
+import { socket } from '@/features/pulses/api/socket';
 
 import { Navigation } from './Navigation';
 
 import type React from 'react';
 
-export const Sidebar: React.FC = () => {
-  const { isConnected } = usePulseSocket();
+type SidebarProps = {
+  isConnected: boolean;
+};
 
+export const Sidebar: React.FC<SidebarProps> = ({ isConnected }) => {
   return (
     <aside className="hidden lg:flex w-64 flex-col border-r border-slate-900 bg-slate-950">
         <SidebarHeader />

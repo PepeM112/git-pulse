@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { type PulseEvent } from '@/client';
-import { socket } from '@/services/socket';
+import { socket } from '@/features/pulses/api/socket';
 
 const MAX_PULSES = 50;
 
@@ -31,8 +31,7 @@ export const usePulseSocket = () => {
           action: {
             label: 'View',
             onClick: () => {
-             // Route to feed
-              const feedUrl = `/feed/${pulseWithId.repo}`;
+              const feedUrl = `/feed`;
               window.open(feedUrl, '_blank') 
             }
           }

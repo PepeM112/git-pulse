@@ -1,8 +1,11 @@
+import { useOutletContext } from 'react-router-dom';
+
 import { PulseList } from '@/features/pulses/components/PulseList';
-import { usePulseSocket } from '@/features/pulses/hooks/usePulseSocket';
+import { type PulseEventIdentified } from '@/features/pulses/hooks/usePulseSocket';
+
 
 export const FeedPage: React.FC = () => {
-  const { pulses } = usePulseSocket();
+  const { pulses } = useOutletContext<{ pulses: PulseEventIdentified[] }>();
 
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-4">

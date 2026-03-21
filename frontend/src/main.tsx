@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { Toaster } from 'sonner';
 
 import App from './App';
-import { client } from './graphql/client';
+import { client } from './lib/client';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
