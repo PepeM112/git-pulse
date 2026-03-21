@@ -3,7 +3,6 @@ import hmac
 import json
 
 import requests
-from app.schemas import GithubPushEvent, PulseEvent
 
 # 1. Configuration
 SECRET = "gws_randomsecret123"
