@@ -20,11 +20,6 @@ export const CommitActivityChart: React.FC<CommitActivityChartProps> = ({ pulses
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Activity Velocity</h3>
-          {pulses.length === 0 && (
-            <span className="px-2 py-0.5 bg-amber-500/10 text-amber-500 text-[10px] font-bold rounded border border-amber-500/20">
-              DEMO DATA
-            </span>
-          )}
         </div>
 
         <div className="grid grid-cols-2 bg-slate-950 p-1 rounded-xl border border-slate-800/50 gap-1">
