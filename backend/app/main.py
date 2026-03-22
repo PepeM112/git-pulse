@@ -3,7 +3,7 @@ import sys
 from typing import Any, Dict, Union
 
 import socketio
-from fastapi import Depends, FastAPI, Header, status
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn.logging import DefaultFormatter
 
@@ -56,8 +56,21 @@ async def handle_disconnect(sid: str) -> None:
     response_model=PulseEvent,
 )
 async def github_webhook(
+    request: Request,
     event: GithubPushEvent, x_github_event: str = Header(None)
 ) -> Union[PulseEvent, dict[str, str]]:
+
+    await verify_github_signature(request, request.headers.get("x-hub-signature-256") or "")
+    
+    data = await request.json()
+    logger.info(f"Received GitHub event: {x_github_event} with payload: {data}")
+    
+    try:
+        event = GithubPushEvent(**data)
+    except Exception as e:
+        logger.error(f"Error parsing GithubPushEvent: {e}")
+        raise HTTPException(status_code=422, detail="Invalid payload structure")
+
     if x_github_event != "push":
         logger.info(f"Ignoring {x_github_event} event")
         return {"message": f"Ignored {x_github_event} event"}
