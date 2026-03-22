@@ -52,7 +52,6 @@ async def handle_disconnect(sid: str) -> None:
 @app.post(
     "/api/webhook",
     status_code=status.HTTP_202_ACCEPTED,
-    dependencies=[Depends(verify_github_signature)],
     response_model=PulseEvent,
 )
 async def github_webhook(
