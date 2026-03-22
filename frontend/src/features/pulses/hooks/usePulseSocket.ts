@@ -28,15 +28,15 @@ export const usePulseSocket = () => {
           id: `${data.timestamp}-${Math.random()}`,
         };
 
-        toast.success(`New Pulse from ${data.user}`, {
-          description: `Pushed to ${pulseWithId.repo}: ${pulseWithId.message}`,
+        const title = `${data.user} pushed to ${data.repo}/${data.branch}`;
+        const description = `${data.message}`;
+
+        toast.success(title, {
+          description,
           duration: 5000,
           action: {
             label: 'View',
-            onClick: () => {
-              const feedUrl = `/feed`;
-              window.open(feedUrl, '_blank');
-            },
+            onClick: () => window.open(pulseWithId.url, '_blank'),
           },
         });
         const updated = [pulseWithId, ...prev];

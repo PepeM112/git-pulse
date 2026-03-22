@@ -7,9 +7,9 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn.logging import DefaultFormatter
 
-from app.config import settings
-from app.schemas import GithubPushEvent, PulseEvent
-from app.security import verify_github_signature
+from .config import settings
+from .schemas import GithubPushEvent, PulseEvent
+from .security import verify_github_signature
 
 # --- LOGGING CONFIGURATION ---
 formatter = DefaultFormatter(fmt="%(levelprefix)-10s %(message)s", use_colors=True)
@@ -83,11 +83,15 @@ async def github_webhook(
         latest_message = latest_commit.message
         latest_timestamp = latest_commit.timestamp
         latest_url = str(latest_commit.url)
+        
+    branch_name = data.get("ref", "").replace("refs/heads/", "")
+    repo_short_name = event.repository.name
 
     pulse_data = PulseEvent(
         user=event.sender.login,
         avatar=str(event.sender.avatar_url) if event.sender.avatar_url else None,
-        repo=event.repository.full_name,
+        repo=repo_short_name,
+        branch=branch_name,
         message=latest_message,
         timestamp=latest_timestamp,
         url=latest_url,
@@ -95,7 +99,7 @@ async def github_webhook(
 
     await sio.emit("new_pulse", pulse_data.model_dump())
 
-    logger.info(f"Pulse Event created: {pulse_data.user} pushed to {pulse_data.repo}")
+    logger.info(f"Pulse Event created: {pulse_data.user} pushed to {pulse_data.repo}/{pulse_data.branch}")
 
     return pulse_data
 
