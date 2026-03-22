@@ -3,13 +3,13 @@ import sys
 from typing import Any, Dict, Union
 
 import socketio
-from fastapi import Depends, FastAPI, Header, status
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from uvicorn.logging import DefaultFormatter
 
-from app.config import settings
-from app.schemas import GithubPushEvent, PulseEvent
-from app.security import verify_github_signature
+from .config import settings
+from .schemas import GithubPushEvent, PulseEvent
+from .security import verify_github_signature
 
 # --- LOGGING CONFIGURATION ---
 formatter = DefaultFormatter(fmt="%(levelprefix)-10s %(message)s", use_colors=True)
@@ -52,12 +52,24 @@ async def handle_disconnect(sid: str) -> None:
 @app.post(
     "/api/webhook",
     status_code=status.HTTP_202_ACCEPTED,
-    dependencies=[Depends(verify_github_signature)],
     response_model=PulseEvent,
 )
 async def github_webhook(
+    request: Request,
     event: GithubPushEvent, x_github_event: str = Header(None)
 ) -> Union[PulseEvent, dict[str, str]]:
+
+    await verify_github_signature(request, request.headers.get("x-hub-signature-256") or "")
+    
+    data = await request.json()
+    logger.info(f"Received GitHub event: {x_github_event} with payload: {data}")
+    
+    try:
+        event = GithubPushEvent(**data)
+    except Exception as e:
+        logger.error(f"Error parsing GithubPushEvent: {e}")
+        raise HTTPException(status_code=422, detail="Invalid payload structure")
+
     if x_github_event != "push":
         logger.info(f"Ignoring {x_github_event} event")
         return {"message": f"Ignored {x_github_event} event"}
@@ -71,11 +83,15 @@ async def github_webhook(
         latest_message = latest_commit.message
         latest_timestamp = latest_commit.timestamp
         latest_url = str(latest_commit.url)
+        
+    branch_name = data.get("ref", "").replace("refs/heads/", "")
+    repo_short_name = event.repository.name
 
     pulse_data = PulseEvent(
         user=event.sender.login,
         avatar=str(event.sender.avatar_url) if event.sender.avatar_url else None,
-        repo=event.repository.full_name,
+        repo=repo_short_name,
+        branch=branch_name,
         message=latest_message,
         timestamp=latest_timestamp,
         url=latest_url,
@@ -83,7 +99,7 @@ async def github_webhook(
 
     await sio.emit("new_pulse", pulse_data.model_dump())
 
-    logger.info(f"Pulse Event created: {pulse_data.user} pushed to {pulse_data.repo}")
+    logger.info(f"Pulse Event created: {pulse_data.user} pushed to {pulse_data.repo}/{pulse_data.branch}")
 
     return pulse_data
 

@@ -34,9 +34,6 @@ export const DashboardPage: React.FC = () => {
           <div className="bg-slate-900/40 rounded-2xl border border-slate-800 p-6 flex flex-col justify-center">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Pulses</span>
             <span className="text-4xl font-black text-blue-500 mt-2">{pulses.length}</span>
-            <p className="text-xs text-slate-600 mt-4 leading-relaxed">
-              Waiting for incoming socket events to calculate velocity...
-            </p>
           </div>
         </div>
       </section>

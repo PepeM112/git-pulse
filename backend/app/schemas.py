@@ -9,6 +9,7 @@ class GithubUser(BaseModel):
 
 
 class GithubRepository(BaseModel):
+    name: str
     full_name: str
     html_url: HttpUrl
 
@@ -21,6 +22,7 @@ class GithubCommit(BaseModel):
 
 
 class GithubPushEvent(BaseModel):
+    ref: str
     sender: GithubUser
     repository: GithubRepository
     commits: List[GithubCommit] = Field(default_factory=list)
@@ -31,6 +33,7 @@ class PulseEvent(BaseModel):
     user: str
     avatar: Optional[str]
     repo: str
+    branch: str
     message: str
     timestamp: str
     url: str
