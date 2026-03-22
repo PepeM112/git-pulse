@@ -6,7 +6,7 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688.svg)
 ![GraphQL](https://img.shields.io/badge/GraphQL-E10098.svg)
 
-> GitPulse is a high-performance, event-driven dashboard that monitors GitHub repository activity in real-time. By combining GraphQL for initial state and WebSockets for live updates, it provides a seamless, zero-refresh monitoring experience.
+> GitPulse is a high-performance, event-driven dashboard that monitors GitHub repository activity in real-time. Designed as a lightweight, zero-refresh monitoring tool, it bridges secure Webhook processing with WebSocket live updates and highly optimized client-side persistence.
 
 ## Sneak Peek
 *(Add a GIF here showing a commit happening in the terminal and instantly appearing on the web UI without refreshing)*
@@ -25,33 +25,41 @@ graph LR
 
 ## Core Features
 * **Live Pulse Feed:** Instant UI updates via Socket.io when events (commits, pushes) occur on tracked repositories.
-* **Smart Dashboard:** Fetches repository metadata via **Apollo GraphQL**, featuring client-side filtering (`useMemo` optimized) to prevent unnecessary network requests.
+* **Smart Dashboard:** Fetches repository metadata via **Apollo GraphQL**, featuring client-side filtering to prevent unnecessary network requests.
 * **Resilient UX:** Custom Skeleton loaders to prevent Cumulative Layout Shift (CLS), global Error Boundaries, and automated connection health-checks for the WebSocket.
 * **Secure Auth:** GitHub PAT authentication with secure `localStorage` persistence and automatic header injection.
 
 ## Key Challenges & Architectural Solutions
 
-### 1. Webhook Security & Payload Integrity
+### 1. Zero-Latency Persistence & Data Privacy
+**The Problem:** Storing real-time push events in a traditional centralized database introduces network latency on initial load and raises privacy concerns.
+**The Solution:** I architected a Client-Side Persistence model using localStorage. The frontend acts as the single source of truth. I implemented a lazy-evaluation cleanup routine that strictly enforces a 30-day data retention policy, automatically purging stale events during state initialization. This ensures sub-millisecond initial paints.
+
+### 2. Webhook Security & Payload Integrity
 **The Problem:** Exposing a public `/api/webhook` endpoint means anyone could `POST` malicious or fake data, compromising the dashboard's integrity.
-**The Solution:** I implemented a strict verification middleware on the backend. GitHub signs its payloads using a secret token. My server computes a `SHA256 HMAC` hash of the incoming request body and compares it against the `X-Hub-Signature-256` header. If they don't match, the request is immediately dropped with a `401 Unauthorized`.
+**The Solution:** Implemented a strict verification middleware on the backend. GitHub signs its payloads using a secret token. The server computes a `SHA256 HMAC` hash of the incoming request body and compares it against the `X-Hub-Signature-256` header. If they don't match, the request is immediately dropped with a `401 Unauthorized`.
 
-### 2. Frontend Bundle Bloat & TTI Optimization
+### 3. Frontend Bundle Bloat & TTI Optimization
 **The Problem:** Integrating heavy libraries like `Recharts` and `@apollo/client` bloated the initial Vite build to over 1.1MB, negatively impacting the Time-to-Interactive (TTI) on slower networks.
-**The Solution:** I implemented a custom `manualChunks` strategy in the Rollup configuration. By splitting framework code, heavy utilities, and charting libraries into separate vendor chunks, the critical `index.js` entry point was reduced to **~39KB (a 96% reduction)**. This ensures near-instant initial paints and maximizes long-term browser caching.
+**The Solution:** Implemented a custom `manualChunks` strategy in the Rollup configuration. By splitting framework code, heavy utilities, and charting libraries into separate vendor chunks, the critical `index.js` entry point was reduced to **~39KB (a 96% reduction)**. This ensures near-instant initial paints and maximizes long-term browser caching.
 
-### 3. State Management & Memory Leaks in Real-Time
-**The Problem:** A highly active repository could flood the frontend with hundreds of WebSocket events per minute, eventually causing browser memory leaks and DOM sluggishness.
+### 4. Distributed Cloud Infraestructure & WSS Handshakes
+**The Problem:** Hosting on Vercel (Front) and Render (Back) created complex CORS blocks and connection timeouts during HTTP polling.
+**The Solution:** Configured environment-specific CORS policies and forced the client to upgrade directly to the WebSocket transport protocol (`wss://`). This bypasses the polling phase, eliminating cold-start connection drops common in distributed environments.
+
+### 4. State Management & Memory Leaks in Real-Time
+**The Problem:** High-activity repositories could flood the frontend with hundreds of WebSocket events per minute, eventually causing browser memory leaks and DOM sluggishness.
 **The Solution:** The event queue is strictly capped at 50 items. Furthermore, the Socket.io listeners are wrapped in a robust `useEffect` hook that guarantees clean disconnection and listener removal when components unmount, preventing overlapping ghost subscriptions.
 
-### 4. Data Transformation for DataViz
-**The Problem:** The raw event data doesn't map 1:1 to charting requirements. Days with zero commits would simply be missing from the Recharts X-axis, distorting the visual timeline.
-**The Solution:** Wrote pure utility functions (fully covered by **Vitest**) that map event timestamps to a continuous rolling 7/30-day calendar array, dynamically injecting `count: 0` for empty days to maintain structural integrity in the chart.
+### 5. Data Transformation for DataViz
+**The Problem:** Raw event data is non-continuous; days with zero activity are missing, which distorts visual timelines in charts.
+**The Solution:** Developed pure utility functions (fully covered by **Vitest**) that map event timestamps to a continuous rolling 7/30-day calendar array, dynamically injecting `count: 0` for empty days to maintain structural integrity in the chart.
 
 ## Tech Stack
-* **Frontend:** React 19, Vite 7, Tailwind CSS v4, Recharts, Radix UI.
+* **Frontend:** React 19, Vite 7, Tailwind CSS v4, Recharts.
 * **State & Data:** Apollo Client (GraphQL), Socket.io-client, Custom Hooks.
-* **Backend:** FastAPI (Python), WebSockets.
-* **Testing & Quality:** Vitest, ESLint, Stylelint (Tailwind v4 tailored), Prettier, Husky.
+* **Backend:** FastAPI (Python), WebSockets, Uvicorn, HMAC Security.
+* **Testing & Quality:** Vitest, ESLint, Prettier.
 
 ## 🚀 Local Setup
 
