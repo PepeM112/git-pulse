@@ -4,12 +4,15 @@ import { toast } from 'sonner';
 import { type PulseEvent } from '@/client';
 import { socket } from '@/features/pulses/api/socket';
 
+import { getPulsesFromStorage, savePulsesToStorage } from '../utils/pulses-storage';
+
 const MAX_PULSES = 50;
 
 export type PulseEventIdentified = PulseEvent & { id: string };
 
 export const usePulseSocket = () => {
-  const [pulses, setPulses] = useState<PulseEventIdentified[]>([]);
+  const [pulses, setPulses] = useState<PulseEventIdentified[]>(getPulsesFromStorage());
+
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -37,6 +40,7 @@ export const usePulseSocket = () => {
           },
         });
         const updated = [pulseWithId, ...prev];
+        savePulsesToStorage(updated);
         return updated.slice(0, MAX_PULSES);
       });
     });
